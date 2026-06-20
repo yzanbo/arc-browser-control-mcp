@@ -1,0 +1,21 @@
+{
+  "name": "arc-browser-control-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for controlling Arc Browser via AppleScript",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "arc",
+    "browser",
+    "applescript",
+    "automation"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0"
+  }
+}

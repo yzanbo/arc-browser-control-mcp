@@ -1,0 +1,36 @@
+# 依存関係
+node_modules/
+
+# ログ
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS固有ファイル
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# エディタ
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 環境変数
+.env
+.env.local
+.env.*.local
+
+# ビルド成果物
+dist/
+build/
+
+# テスト/カバレッジ
+coverage/
+.nyc_output/
+
+# MCPツールのローカルメタデータ
+.serena/
