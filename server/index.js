@@ -93,7 +93,6 @@ class ArcBrowserControlServer {
     return str
       .replace(/\\/g, '\\\\')
       .replace(/"/g, '\\"')
-      .replace(/'/g, "\\'")
       .replace(/\n/g, '\\n')
       .replace(/\r/g, '\\r')
       .replace(/\t/g, '\\t');
@@ -2633,11 +2632,11 @@ class ArcBrowserControlServer {
             const { selector, tab_index } = args;
             const escapedSelector = this.escapeForAppleScript(selector);
             const jsCode = `(function() {
-              const el = document.querySelector('${escapedSelector}');
+              const el = document.querySelector("${escapedSelector}");
               if (!el) return JSON.stringify({error: '要素が見つかりません: ${escapedSelector}'});
               const styles = window.getComputedStyle(el);
               return JSON.stringify({
-                selector: '${escapedSelector}',
+                selector: "${escapedSelector}",
                 display: styles.display,
                 position: styles.position,
                 width: styles.width,
@@ -2741,7 +2740,7 @@ class ArcBrowserControlServer {
             if (options.sameSite) cookieString += `; SameSite=${options.sameSite}`;
 
             const jsCode = `(function() {
-              document.cookie = '${cookieString}';
+              document.cookie = "${cookieString}";
               return 'Cookie "${escapedName}" を設定しました';
             })()`;
 
@@ -2774,8 +2773,8 @@ class ArcBrowserControlServer {
             const escapedName = this.escapeForAppleScript(name);
 
             const jsCode = `(function() {
-              document.cookie = '${escapedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-              return 'Cookie "${escapedName}" を削除しました';
+              document.cookie = "${escapedName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+              return "Cookie \\"${escapedName}\\" を削除しました";
             })()`;
 
             const script = tab_index
@@ -2937,7 +2936,7 @@ class ArcBrowserControlServer {
               // 非同期で取得してグローバル変数に保存
               indexedDB.databases().then(async databases => {
                 ${database ? `
-                const targetDb = databases.find(db => db.name === '${escapedDatabase}');
+                const targetDb = databases.find(db => db.name === "${escapedDatabase}");
                 if (!targetDb) {
                   window.__arcIndexedDBResult = JSON.stringify({ error: 'データベースが見つかりません: ${escapedDatabase}' });
                   return;
@@ -3012,7 +3011,7 @@ class ArcBrowserControlServer {
                 return result;
               }
               // 非同期で削除してグローバル変数に保存
-              const request = indexedDB.deleteDatabase('${escapedDb}');
+              const request = indexedDB.deleteDatabase("${escapedDb}");
               request.onsuccess = () => {
                 window.__arcClearIndexedDBResult = JSON.stringify({
                   message: 'データベース "${escapedDb}" を削除しました'
@@ -3076,7 +3075,7 @@ class ArcBrowserControlServer {
                 }
               }
               window.__arcNetworkRequests = [];
-              window.__arcNetworkFilter = '${escapedFilter}';
+              window.__arcNetworkFilter = "${escapedFilter}";
               window.__arcNetworkRequestId = 0;
 
               // Fetch のオーバーライド
@@ -3402,8 +3401,8 @@ class ArcBrowserControlServer {
                 allLogs = [...window.__arcPreservedLogs, ...window.__arcConsoleLogs];
               }
               let logs = allLogs;
-              if ('${level}' !== 'all') {
-                logs = logs.filter(log => log.level === '${level}');
+              if ("${level}" !== 'all') {
+                logs = logs.filter(log => log.level === "${level}");
               }
               logs = logs.slice(-${limit});
 
@@ -3416,7 +3415,7 @@ class ArcBrowserControlServer {
               };
 
               return JSON.stringify({
-                filter: '${level}',
+                filter: "${level}",
                 count: logs.length,
                 total: allLogs.length,
                 currentCount: window.__arcConsoleLogs.length,
@@ -3524,18 +3523,18 @@ class ArcBrowserControlServer {
                 window.__arcFetchResults = {};
               }
 
-              const reqId = '${reqId}';
+              const reqId = "${reqId}";
               const options = {
-                method: '${method}',
-                headers: JSON.parse('${this.escapeForAppleScript(headersJson)}'),
+                method: "${method}",
+                headers: JSON.parse("${this.escapeForAppleScript(headersJson)}"),
                 credentials: 'include'
               };
 
-              ${body ? `options.body = '${escapedBody}';` : ''}
+              ${body ? `options.body = "${escapedBody}";` : ''}
 
               window.__arcFetchResults[reqId] = { status: 'pending', startTime: Date.now() };
 
-              fetch('${escapedUrl}', options)
+              fetch("${escapedUrl}", options)
                 .then(async response => {
                   const contentType = response.headers.get('content-type') || '';
                   let data;
@@ -3568,8 +3567,8 @@ class ArcBrowserControlServer {
               return JSON.stringify({
                 message: 'リクエストを送信しました',
                 request_id: reqId,
-                url: '${escapedUrl}',
-                method: '${method}'
+                url: "${escapedUrl}",
+                method: "${method}"
               });
             })()`;
 
@@ -3606,7 +3605,7 @@ class ArcBrowserControlServer {
                 return JSON.stringify({ error: 'フェッチ結果がありません' });
               }
 
-              const result = window.__arcFetchResults['${escapedReqId}'];
+              const result = window.__arcFetchResults["${escapedReqId}"];
               if (!result) {
                 return JSON.stringify({ error: 'リクエストID "${escapedReqId}" が見つかりません' });
               }
@@ -3616,7 +3615,7 @@ class ArcBrowserControlServer {
               }
 
               // 完了したら結果を削除
-              delete window.__arcFetchResults['${escapedReqId}'];
+              delete window.__arcFetchResults["${escapedReqId}"];
 
               return JSON.stringify(result);
             })()`;
@@ -3656,11 +3655,11 @@ class ArcBrowserControlServer {
 
             const jsCode = `(function() {
               try {
-                ${storage_type}.setItem('${escapedKey}', '${escapedValue}');
+                ${storage_type}.setItem("${escapedKey}", "${escapedValue}");
                 return JSON.stringify({
-                  message: '${storage_type} に値を設定しました',
-                  key: '${escapedKey}',
-                  value: '${escapedValue}'
+                  message: "${storage_type} に値を設定しました",
+                  key: "${escapedKey}",
+                  value: "${escapedValue}"
                 });
               } catch (e) {
                 return JSON.stringify({ error: e.message });
@@ -3700,9 +3699,9 @@ class ArcBrowserControlServer {
 
             const jsCode = `(function() {
               try {
-                const value = ${storage_type}.getItem('${escapedKey}');
+                const value = ${storage_type}.getItem("${escapedKey}");
                 if (value === null) {
-                  return JSON.stringify({ key: '${escapedKey}', value: null, exists: false });
+                  return JSON.stringify({ key: "${escapedKey}", value: null, exists: false });
                 }
                 // JSON として解析を試みる
                 let parsed = value;
@@ -3712,7 +3711,7 @@ class ArcBrowserControlServer {
                   // JSON でない場合はそのまま
                 }
                 return JSON.stringify({
-                  key: '${escapedKey}',
+                  key: "${escapedKey}",
                   value: parsed,
                   raw: value,
                   exists: true
@@ -3755,11 +3754,11 @@ class ArcBrowserControlServer {
 
             const jsCode = `(function() {
               try {
-                const existed = ${storage_type}.getItem('${escapedKey}') !== null;
-                ${storage_type}.removeItem('${escapedKey}');
+                const existed = ${storage_type}.getItem("${escapedKey}") !== null;
+                ${storage_type}.removeItem("${escapedKey}");
                 return JSON.stringify({
                   message: existed ? 'キー "${escapedKey}" を削除しました' : 'キー "${escapedKey}" は存在しませんでした',
-                  key: '${escapedKey}',
+                  key: "${escapedKey}",
                   existed: existed
                 });
               } catch (e) {
@@ -3810,8 +3809,8 @@ class ArcBrowserControlServer {
                 window.__arcWatchers = {};
               }
 
-              const watchId = '${watchId}';
-              const selector = '${escapedSelector}';
+              const watchId = "${watchId}";
+              const selector = "${escapedSelector}";
               const element = document.querySelector(selector);
 
               if (!element) {
@@ -3902,15 +3901,15 @@ class ArcBrowserControlServer {
             const escapedWatchId = this.escapeForAppleScript(watch_id);
 
             const jsCode = `(function() {
-              if (!window.__arcWatchers || !window.__arcWatchers['${escapedWatchId}']) {
+              if (!window.__arcWatchers || !window.__arcWatchers["${escapedWatchId}"]) {
                 return JSON.stringify({ error: '監視ID "${escapedWatchId}" が見つかりません' });
               }
 
-              const watcher = window.__arcWatchers['${escapedWatchId}'];
+              const watcher = window.__arcWatchers["${escapedWatchId}"];
               const changes = watcher.changes.slice(-${limit});
 
               return JSON.stringify({
-                watch_id: '${escapedWatchId}',
+                watch_id: "${escapedWatchId}",
                 selector: watcher.selector,
                 startTime: watcher.startTime,
                 count: changes.length,
@@ -3948,19 +3947,19 @@ class ArcBrowserControlServer {
             const escapedWatchId = this.escapeForAppleScript(watch_id);
 
             const jsCode = `(function() {
-              if (!window.__arcWatchers || !window.__arcWatchers['${escapedWatchId}']) {
+              if (!window.__arcWatchers || !window.__arcWatchers["${escapedWatchId}"]) {
                 return JSON.stringify({ error: '監視ID "${escapedWatchId}" が見つかりません' });
               }
 
-              const watcher = window.__arcWatchers['${escapedWatchId}'];
+              const watcher = window.__arcWatchers["${escapedWatchId}"];
               watcher.observer.disconnect();
               const count = watcher.changes.length;
 
-              delete window.__arcWatchers['${escapedWatchId}'];
+              delete window.__arcWatchers["${escapedWatchId}"];
 
               return JSON.stringify({
                 message: 'DOM監視を停止しました',
-                watch_id: '${escapedWatchId}',
+                watch_id: "${escapedWatchId}",
                 capturedChanges: count
               });
             })()`;
@@ -4129,7 +4128,7 @@ class ArcBrowserControlServer {
                   return JSON.stringify({ error: "要素が見つかりません: ${escapedSelector}" });
                 }
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                const event = new MouseEvent('${clickType}', {
+                const event = new MouseEvent("${clickType}", {
                   bubbles: true,
                   cancelable: true,
                   view: window
