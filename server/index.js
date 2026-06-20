@@ -89,9 +89,14 @@ class ArcBrowserControlServer {
    * @returns {string} - エスケープされた文字列
    */
   escapeForAppleScript(str) {
+    if (typeof str !== 'string') return String(str);
     return str
       .replace(/\\/g, '\\\\')
-      .replace(/"/g, '\\"');
+      .replace(/"/g, '\\"')
+      .replace(/'/g, "\\'")
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r')
+      .replace(/\t/g, '\\t');
   }
 
   setupHandlers() {
@@ -2726,7 +2731,8 @@ class ArcBrowserControlServer {
             if (options.expires) {
               const days = parseInt(options.expires);
               if (!isNaN(days)) {
-                cookieString += `; expires=' + new Date(Date.now() + ${days} * 864e5).toUTCString() + '`;
+                const expiresDate = new Date(Date.now() + days * 864e5).toUTCString();
+                cookieString += `; expires=${expiresDate}`;
               } else {
                 cookieString += `; expires=${options.expires}`;
               }
@@ -3642,6 +3648,9 @@ class ArcBrowserControlServer {
           // Storage 操作
           case 'arc_set_storage': {
             const { key, value, storage_type = 'localStorage', tab_index } = args;
+            if (storage_type !== 'localStorage' && storage_type !== 'sessionStorage') {
+              throw new Error(`storage_type は 'localStorage' または 'sessionStorage' のみ指定可能です: ${storage_type}`);
+            }
             const escapedKey = this.escapeForAppleScript(key);
             const escapedValue = this.escapeForAppleScript(value);
 
@@ -3684,6 +3693,9 @@ class ArcBrowserControlServer {
 
           case 'arc_get_storage_item': {
             const { key, storage_type = 'localStorage', tab_index } = args;
+            if (storage_type !== 'localStorage' && storage_type !== 'sessionStorage') {
+              throw new Error(`storage_type は 'localStorage' または 'sessionStorage' のみ指定可能です: ${storage_type}`);
+            }
             const escapedKey = this.escapeForAppleScript(key);
 
             const jsCode = `(function() {
@@ -3736,6 +3748,9 @@ class ArcBrowserControlServer {
 
           case 'arc_remove_storage_item': {
             const { key, storage_type = 'localStorage', tab_index } = args;
+            if (storage_type !== 'localStorage' && storage_type !== 'sessionStorage') {
+              throw new Error(`storage_type は 'localStorage' または 'sessionStorage' のみ指定可能です: ${storage_type}`);
+            }
             const escapedKey = this.escapeForAppleScript(key);
 
             const jsCode = `(function() {

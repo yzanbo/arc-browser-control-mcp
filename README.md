@@ -4,7 +4,7 @@ Arc Browser を AppleScript 経由で制御する MCP サーバーです。
 
 > **対応環境**: macOS 専用（AppleScript を使用）
 
-## 機能一覧（58個）
+## 機能一覧（76個）
 
 ### タブ操作（6個）
 
@@ -35,6 +35,12 @@ Arc Browser を AppleScript 経由で制御する MCP サーバーです。
 | `arc_focus_window` | ウィンドウにフォーカス |
 | `arc_close_window` | ウィンドウを閉じる |
 
+### アプリ管理（1個）
+
+| ツール | 説明 |
+|--------|------|
+| `arc_quit` | Arc Browser を終了 |
+
 ### ページ操作（3個）
 
 | ツール | 説明 |
@@ -42,6 +48,20 @@ Arc Browser を AppleScript 経由で制御する MCP サーバーです。
 | `arc_execute_javascript` | JavaScript を実行 |
 | `arc_get_page_content` | ページのテキストを取得 |
 | `arc_get_page_html` | ページのHTMLを取得 |
+
+### DOM操作・自動化（9個）
+
+| ツール | 説明 |
+|--------|------|
+| `arc_click` | 指定したセレクタの要素をクリック（ダブルクリック対応） |
+| `arc_hover` | 指定したセレクタの要素にホバー |
+| `arc_fill` | input / textarea / select に値を入力 |
+| `arc_fill_form` | 複数フォーム要素を一括入力 |
+| `arc_press_key` | キー / キー組み合わせを送信 |
+| `arc_drag` | 要素を別要素にドラッグ&ドロップ |
+| `arc_upload_file` | ファイルアップロード input にファイルパスを設定 |
+| `arc_wait_for` | テキスト / セレクタの出現を待機 |
+| `arc_handle_dialog` | alert / confirm / prompt ダイアログを処理 |
 
 ### ナビゲーション（2個）
 
@@ -72,7 +92,7 @@ Arc Browser を AppleScript 経由で制御する MCP サーバーです。
 |--------|------|
 | `arc_move_tab_to_space` | タブを別Spaceに移動 |
 
-### フロントエンド開発向け機能（23個）
+### フロントエンド開発向け機能（31個）
 
 #### ページ情報・SEO（5個）
 
@@ -91,6 +111,22 @@ Arc Browser を AppleScript 経由で制御する MCP サーバーです。
 | `arc_inject_css` | CSS注入 |
 | `arc_get_computed_styles` | 要素のスタイル取得 |
 | `arc_get_page_performance` | パフォーマンス情報 |
+
+#### パフォーマンス計測（3個）
+
+| ツール | 説明 |
+|--------|------|
+| `arc_get_performance_metrics` | Core Web Vitals 等のパフォーマンスメトリクス取得 |
+| `arc_get_resource_timing` | リソースのタイミング情報を取得 |
+| `arc_measure_performance` | ナビゲーション・ペイントタイミング等を計測 |
+
+#### エミュレーション（3個）
+
+| ツール | 説明 |
+|--------|------|
+| `arc_emulate_network` | ネットワーク速度をエミュレート（スロットリング） |
+| `arc_emulate_geolocation` | 位置情報をエミュレート |
+| `arc_emulate_cpu` | CPU 速度をエミュレート（スロットリング） |
 
 #### ストレージ（2個）
 
@@ -124,20 +160,22 @@ Arc Browser を AppleScript 経由で制御する MCP サーバーです。
 
 > **※2回呼び出しについて**: これらの機能は非同期APIを使用するため、1回目の呼び出しでリクエストを開始し、2回目の呼び出しで結果を取得します。「取得中...」というメッセージが表示されたら、少し待ってから再度同じコマンドを実行してください。
 
-#### Network/API監視（3個）
+#### Network/API監視（4個）
 
 | ツール | 説明 |
 |--------|------|
 | `arc_start_network_monitor` | ネットワークリクエスト（fetch/XHR）の監視を開始 |
 | `arc_get_network_requests` | 監視中のリクエスト一覧を取得（URL、メソッド、ステータス、レスポンス時間） |
+| `arc_get_network_request` | 特定リクエストの詳細を取得 |
 | `arc_stop_network_monitor` | ネットワーク監視を停止 |
 
-#### Console監視（3個）
+#### Console監視（4個）
 
 | ツール | 説明 |
 |--------|------|
 | `arc_start_console_capture` | コンソールログのキャプチャを開始（log/info/warn/error/debug） |
 | `arc_get_console_logs` | キャプチャしたログを取得（レベル別フィルタ対応） |
+| `arc_get_console_message` | 特定コンソールメッセージの詳細を取得 |
 | `arc_stop_console_capture` | コンソールキャプチャを停止 |
 
 **Console監視の特徴:**
